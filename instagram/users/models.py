@@ -6,7 +6,7 @@ from django.utils.translation import ugettext_lazy as _
 
 @python_2_unicode_compatible
 class User(AbstractUser):
-
+    """ User Model """
     # First Name and Last Name do not cover name patterns
     # around the globe.
 
