@@ -23,6 +23,7 @@ urlpatterns = [
     # Your stuff: custom urls includes go here
 
     path("images/", include("instagram.images.urls", namespace="images")),
+    
 ] + static(
     settings.MEDIA_URL, document_root=settings.MEDIA_ROOT
 )
