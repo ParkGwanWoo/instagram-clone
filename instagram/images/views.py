@@ -1,5 +1,6 @@
 # Create your views here.
 from rest_framework.views import APIView
+from rest_framework import status
 from rest_framework.response import Response
 from . import models, serializers
 
@@ -31,14 +32,24 @@ class LikeImage(APIView):
         try:
             found_image = models.Image.objects.get(id=image_id)
         except models.Image.DoesNotExist:
-            return Response(status=404)
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
-        new_like = models.Like.objects.create(
-            creator = user,
-            image = found_image
-        )
-        
-        new_like.save()
+        try:
+            preexisting_like = models.Like.objects.get(
+                creator = user,
+                image = found_image
+            )
 
+            preexisting_like.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
 
-        return Response(status=200)
+        except models.Like.DoesNotExist:
+
+            new_like = models.Like.objects.create(
+                creator = user,
+                image = found_image
+            )
+            
+            new_like.save()
+            return Response(status=status.HTTP_201_CREATED)
+            
