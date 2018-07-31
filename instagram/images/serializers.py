@@ -3,7 +3,7 @@ from . import models
 from instagram.users import models as user_models
 
 
-class UserProfileImageSerializer(serializers.ModelSerializer):
+class CountImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Image
         fields = (
@@ -13,8 +13,7 @@ class UserProfileImageSerializer(serializers.ModelSerializer):
             'comment_count',
         )
         
-
-
+        
 class LikeSerializer(serializers.ModelSerializer):
 
     class Meta:
