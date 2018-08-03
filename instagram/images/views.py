@@ -3,12 +3,12 @@ from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.response import Response
 from . import models, serializers
+from instagram.notifications import views as notification_views
 
 class Feed(APIView):
     def get(self, request, format=None):
         user = request.user
         following_users = user.following.all()
-        
         image_list = []
 
         for following_user in following_users:
@@ -50,6 +50,8 @@ class LikeImage(APIView):
             )
             
             new_like.save()
+            notification_views.create_notification(user, found_image.creator, 'like', found_image)
+
             return Response(status=status.HTTP_201_CREATED)
 
 class UnLikeImage(APIView):
@@ -82,6 +84,8 @@ class CommentOnImage(APIView):
 
         if serializer.is_valid():
             serializer.save(creator=user, image=found_image)
+            notification_views.create_notification(user, found_image.creator, 'comment', found_image, serializer.data['message'])
+
             return Response(data=serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
